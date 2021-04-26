@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+	<style>
+		#map {position: absolute; top: 0; bottom: 0; left: 0; right: 0};
+	</style>
+</head>
+<body>
+	<div id = "map"></div>
+	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
+	<script type="text/javascript">
+		//OSM tiles attribution and URL
+		var osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+		var osmURL = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+		var osmAttrib = '&copy; ' + osmLink;
+
+		//Carto tiles attribution and URL
+		var cartoLink = '<a href="http://cartodb.com/attributions">CartoDB</a>';
+		var cartoURL = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+		var cartoAttrib = '&copy; ' + osmLink + ' &copy; ' + cartoLink;
+
+		//Stamen Toner tiles attribution and URL
+		var stamenURL = 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}';
+		var stamenAttrib = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+
+		//Elevation tiles attribution and URL
+		var ElevationLink = '<a href="https://www.openstreetmap.org/copyright">Elevation</a>';
+		var ElevationURL = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+		var ElevationAttrib = '&copy; ' + ElevationLink;
+
+		//Creation of map tiles
+		var ElevationMap = L.tileLayer(ElevationURL, {attribution: ElevationAttrib});
+		var osmMap = L.tileLayer(osmURL, {attribution: osmAttrib});
+		var cartoMap = L.tileLayer(cartoURL, {attribution: cartoAttrib});
+		var stamenMap = L.tileLayer(stamenURL,{
+			attribution: stamenAttrib,
+			subdomains: 'abcd',
+			minZoom: 0,
+			maxZoom: 20,
+			ext: 'png'
+		});
+
+		//Map creation
+		var map = L.map('map',{
+			layers: [osmMap]
+		}).setView([42.846787, -4.451736], 8);
+
+		//Base layers definition and addition
+		var baseLayers = {
+			"OSM Mapnik": osmMap,
+			"Carto DarkMatter": cartoMap,
+			"Stamen Toner": stamenMap,
+			"Elevation": ElevationMap
+		};
+
+		 //Add baseLayers to map as control layers
+		 L.control.layers(baseLayers).addTo(map);
+	</script>
+		<script>
+
+		 //Add baseLayers to map as control layers
+		//L.tileLayer('https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=pk.eyJ1IjoiYnRyb29saW4iLCJhIjoiY2s5MjZ2OW55MDVldDNobDVsN3Jybmk4YyJ9.bAKA3BfCyOkpSZZYA24KYw').addto(map);
+
+		var polylinePoints = [
+			  [43.157559, -1.249227],//leaving st jean pied de port
+				[43.093702, -1.300735],//Valcarlos
+				[43.009561, -1.319231],//Roncevalles
+				[42.989720, -1.335259],//Burguette
+				[42.968048, -1.418394],//Viscarret
+				[42.967556, -1.420075],//path to zubiri
+				[42.931244, -1.504438],//Zubiri
+				[42.912702, -1.524325],//Urdaniz
+				[42.910405, -1.517947],//Illaraz
+        [42.816063, -1.647603],//pamplona
+				[42.788536, -1.706089],//leaving Pamplona
+				[42.748084, -1.722873],//Zariquiegui
+				[42.741362, -1.765699],//metal Statues
+				[42.708748, -1.760779],//Uterga
+				[42.679397, -1.786410],//Obanos
+				[42.671302, -1.816654],//Puenta la reina
+				[42.669805, -1.818859],//Puenta la reina bridge
+				[42.669978, -1.863004],//mañeru lunch with Siggi
+				[42.675822, -1.892053],//cirauqui
+				[42.675796, -1.892358],//cirauqui dinner
+				[42.662271, -2.000629],//path to estella
+				[42.657683, -2.036852],//Ayegui metalsmith
+				[42.650730, -2.044000],//free wine fountain
+				[42.635947, -2.087126],//bar azketako
+				[42.554112, -2.266225],//sansol
+				[42.514158, -2.371963],//Viana
+        [42.461874, -2.444415],//logrono
+				[42.429486, -2.561670],//Navarette
+				[42.413358, -2.672506],//Alesón (east of on trail)
+				[42.404855, -2.690646],//Alesón
+				[42.417153, -2.729777],//Najera
+				[42.423943, -2.802885],//azofra
+				[42.441170, -2.954059],//Santo Domingo de Calzada
+				[42.386972, -3.308899],//Villafranca Montes de Oca
+				[42.375950, -3.437261],//San Juan de Ortega
+				[42.322569, -3.458110],//Arlanzon
+		    [42.344061, -3.696238],//burgos
+				[42.340548, -3.834482],//rabe de las calzadas
+				[42.338789, -3.925994],//Hornillos Del Camino
+				[42.312758, -4.044092],//Hontanas
+				[42.293116, -4.098616],//san anton convent ruins
+				[42.292036, -4.126277],//Castrojeriz
+				[42.287365, -4.179150],//alto de mostelares
+				[42.288087, -4.257817],//Itero de la Vega
+				[42.263175, -4.399908],//Fromista
+				[42.339699, -4.606725],//Carrión de Los Condes
+				[42.328911, -4.799465],//Calzadilla de la Cueza
+				[42.360441, -4.925610],//Moratinos
+				[42.370154, -5.025112],//Sahagun
+				[42.423854, -5.219843],//El Burgo Ranero
+				[42.473711, -5.353462],//Reliegos - Bar Elvis
+				[42.594197, -5.492978],//Valdefresno
+        [42.599117, -5.566543],//leon
+				[42.506762, -5.686572],//Chozas de Abajo
+				[42.483826, -5.727311],//Villar de Mazarife
+				[42.463917, -5.877539],//Hospital de Órbigo
+				[42.457964, -6.056372],//astorga
+				[42.455276, -6.159214],//Santa Catalina de Somoza
+				[42.462585, -6.208358],//El Ganso
+				[42.488760, -6.360984],//Cruz de Ferro
+				[42.539677, -6.514748],//Molinaseca
+				[42.543841, -6.593285],//ponferrada
+				[42.579196, -6.667973],//Camponaraya
+				[42.600013, -6.729566],//cacabelos
+				[42.606439, -6.748768],//Pieros
+				[42.606596, -6.811015],//Villafranca del Bierzo
+				[42.664573, -6.945887],//vega de valcarce.0
+				[42.707957, -7.043909],//O Cebreiro
+				[42.731697, -7.157152],//Fonfria
+				[42.753888, -7.243625],//Triacastela
+				[42.780267, -7.414791],//sarria
+				[42.778391, -7.423777],//Leaving Sarria
+				[42.804993, -7.616324],//portomarin
+				[42.826384, -7.696395],//Gonzar
+				[42.873230, -7.869280],//palas de rey
+				[42.867070, -7.878048],//Leaving Palas del Rey
+				[42.913881, -8.014776],//Melide
+				[42.915963, -8.078420],//boente
+				[42.938022, -8.154566],//Ribadiso
+				[42.925532, -8.224070],//A calzada Calla Lilies
+				[42.904478, -8.362338],//o pedruozo
+				[42.880558, -8.544736],//santiago de Compostela
+				[42.875351, -8.571088],//Leaving Santiago de Compostela
+				[42.910495, -8.736682],//negreira
+				[42.920560, -8.751781],//Past negreira
+				[42.963251, -8.912647],//As maroñas
+				[42.965788, -9.038786],//Olveiroa
+				[42.958149, -9.192246],//cee
+				[42.943787, -9.193714],//Corcubion
+				[42.943881, -9.232002],//routa finnisterreA
+				[42.920426, -9.267868],//routa finnisterraB
+				[42.912248, -9.266010],//finisterre
+      ];
+	var polyline = L.polyline(polylinePoints).addTo(map);
+		//set the popup size so multiple images  have a scroll bar
+	var customOptions =
+    {
+    'maxWidth': '500',
+		'minWidth': '320',
+		'maxHeight': '500',
+    'className' : 'custom'
+    }
+		var customPopup = "<a href='https://i.imgur.com/Wedw4GR.jpg'>End Of The Line</a><br/><img src='https://i.imgur.com/Wedw4GR.jpg' width='300'/>";
+		L.marker([42.912248, -9.266010]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/NKqfRr9.jpg'>Alto del Perdon. Wrought iron figures</a><br/><img src='https://i.imgur.com/NKqfRr9.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.741362, -1.765699]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/l3Y4cQP.jpg'>Templar Castle 4-24-18</a><br/><img src='https://i.imgur.com/siXBIX5.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/G519wOE.jpg'>Ponferrada Bridge 4-24-18</a><br/><img src='https://i.imgur.com/G519wOE.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/iJv5gv1.jpg'>Ponferrada Sculpture 4-24-18</a><br/><img src='https://i.imgur.com/iJv5gv1.jpg' alt='Santiago' width='300'/><br/>";
+		L.marker([42.543841, -6.593285]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/C4LITw7.jpg'>Cruz de Ferro 4-23-18</a><br/><img src='https://i.imgur.com/C4LITw7.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/w2Jumkw.jpg'>Teodoro de Ferro</a><br/><img src='https://i.imgur.com/w2Jumkw.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.488760, -6.360984]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/rhbcwBk.jpg'>Burgos Sculpture 4-11-18</a><br/><img src='https://i.imgur.com/rhbcwBk.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/hG62ePr.jpg'>Burgos Room View</a><br/><img src='https://i.imgur.com/hG62ePr.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/xpkx2Iz.jpg'>Burgos Cena</a><br/><img src='https://i.imgur.com/xpkx2Iz.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/uG6oOV6.jpg'>Leaving Burgos 4-12-18</a><br/><img src='https://i.imgur.com/uG6oOV6.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/wxNLkYz.jpg'>Burgos Evolution Museum 4-12-19</a><br/><img src='https://i.imgur.com/wxNLkYz.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/hEC0L0H.jpg'>Burgos: Siggi 4-12-19</a><br/><img src='https://i.imgur.com/hEC0L0H.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/B9j7ClO.jpg'>Burgos Refreshments 4-12-19</a><br/><img src='https://i.imgur.com/B9j7ClO.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.340187, -3.727481]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/pfi7Exo.jpg'>Teodoro in Profile</a><br/><img src='https://i.imgur.com/pfi7Exo.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/Qsev3qd.jpg'>Cirueña Pilgrims</a><br/><img src='https://i.imgur.com/Qsev3qd.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.423943, -2.802885]).bindPopup(customPopup, customOptions).addTo(map);
+
+		//var customPopup = "<a href='https://i.imgur.com/XWXsQZg.jpg'>Road to Zubiri</a><br/><img src='https://i.imgur.com/XWXsQZg.jpg' alt='Santiago' width='300'/>";
+		//L.marker([42.967511, -1.419960]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/LkxEugC.jpg'>Leaving St Jean Pied-de-Port 3-29-18</a><br/><img src='https://i.imgur.com/LkxEugC.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/abvrrop.jpg'>Happy Teodoro 3-29-18</a><br/><img src='https://i.imgur.com/abvrrop.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/uGZ6Qv9.jpg'>Green Lawn 3-29-18</a><br/><img src='https://i.imgur.com/uGZ6Qv9.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/TU8CT5E.jpg'>Pilgrims Walking 3-29-18</a><br/><img src='https://i.imgur.com/TU8CT5E.jpg' alt='Santiago' width='300'/>";
+		L.marker([43.157559, -1.249227]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/YOkaRrY.jpg'>Pamplona in rear view mirror</a><br/><img src='https://i.imgur.com/YOkaRrY.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.788536, -1.706089]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/VAOL98q.jpg'>Zariquiegui. Nice bunch of peregrinos</a><br/><img src='https://i.imgur.com/VAOL98q.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.748084, -1.722873]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/mMVLIVB.jpg'>Uterga Happy Hour</a><br/><img src='https://i.imgur.com/mMVLIVB.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.708748, -1.760779]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/GUiAuVF.jpg'>Obanos - Basque Country</a><br/><img src='https://i.imgur.com/GUiAuVF.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.679397, -1.786410]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/RN1KbeA.jpg'>Puenta la Reina Beautiful Tomatoes</a><br/><img src='https://i.imgur.com/RN1KbeA.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.671302, -1.816654]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/2My8RmV.jpg'>Puenta la Reina Bridge of the Queen</a><br/><img src='https://i.imgur.com/2My8RmV.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.669805, -1.818859]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/iq81qUf.jpg'>Mañeru Lunch with Siggi</a><br/><img src='https://i.imgur.com/iq81qUf.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.669978, -1.863004]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/nOdFXGP.jpg'>Cirauqui Restaurante</a><br/><img src='https://i.imgur.com/nOdFXGP.jpg' alt='Santiago' width='300'/><br><a href='https://i.imgur.com/Hw0Ca3h.jpg'>Cirauqui Excellent Dinner</a></br/><img src='https://i.imgur.com/Hw0Ca3h.jpg' alt='Santiago' width='300'/><br><a href='https://i.imgur.com/eI1iHIB.jpg'>Amazing Stew</a><br/><img src='https://i.imgur.com/eI1iHIB.jpg' alt='Santiago' width='300'/><br><a href='https://i.imgur.com/FhunHWw.jpg'>Amazing Chef</a><br/><img src='https://i.imgur.com/FhunHWw.jpg' alt='Santiago' width='300'/><br><a href='https://i.imgur.com/qnhA7lo.jpg'>Cirauqui Barracks</a></br/><img src='https://i.imgur.com/qnhA7lo.jpg' alt='Santiago' width='300'/><br><a href='https://i.imgur.com/Se2TJVf.jpg'>Cirauqui Albergue</a></br/><img src='https://i.imgur.com/Se2TJVf.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.675796, -1.892358]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/blzY8fD.jpg'>Path to Estella</a><br/><img src='https://i.imgur.com/blzY8fD.jpg'alt='santiago' width='300px'/><br><a href='https://i.imgur.com/K6AHrwN.jpg'>Vineyard</a></br><img src='https://i.imgur.com/K6AHrwN.jpg' alt='santiago' width='300'/><br><a href='https://i.imgur.com/7tcCeA2.jpg'>On the Road</a><br/><img src='https://i.imgur.com/7tcCeA2.jpg' alt='santiago' width='300'/>";
+		L.marker([42.662271, -2.000629]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/nPWs8QJ.jpg'>Ayegui Artist Working Metal</a><br><img src='https://i.imgur.com/nPWs8QJ.jpg' alt='Santiago' width='300'/><br><a href='https://i.imgur.com/YPMlhXk.jpg'>Ayegui on the Trail</a><br/><img src='https://i.imgur.com/YPMlhXk.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.657683, -2.036852]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/Fz8OBwp.jpg'>Free Wine!</a><br/><img src='https://i.imgur.com/Fz8OBwp.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.650730, -2.044000]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/lV71M11.jpg'>Bar Azketako</a><br/><img src='https://i.imgur.com/lV71M11.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.635947, -2.087126]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/ZtWDjwX.jpg'>Michael's boots weren't right for the trail 4-5-18</a><br/><img src='https://i.imgur.com/ZtWDjwX.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/Ig5tCgO.jpg'>La Tienda 4-5-18</a><br/><img src='https://i.imgur.com/Ig5tCgO.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.554112, -2.266225]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/dEvqKIM.jpg'>Michael and Benght from Sweden 4-5-18</a><br/><img src='https://i.imgur.com/dEvqKIM.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/JIsBct2.jpg'>Cena 4-5-18</a><br/><img src='https://i.imgur.com/JIsBct2.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/UIQmO3C.jpg'>Viana Church 4-6-19</a><br/><img src='https://i.imgur.com/UIQmO3C.jpg' width='300'/><br/><a href='https://i.imgur.com/eQ0pX8v.jpg'>Viana Church Interior 4-6-19</a><br/><img src='https://i.imgur.com/eQ0pX8v.jpg' width='300'/>";
+		L.marker([42.514158, -2.371963]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/dPuaqVI.jpg'>Entering Logroño 4-6-18</a><br/><img src='https://i.imgur.com/dPuaqVI.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/eO17etd.jpg'>Logroño Cathedral 4-6-18</a><br/><img src='https://i.imgur.com/eO17etd.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/qDfFL83.jpg'>Logroño Stork</a><br/><img src='https://i.imgur.com/qDfFL83.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/cqML5Rx.jpg'>Logroño Park</a><br/><img src='https://i.imgur.com/cqML5Rx.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.461874, -2.444415]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/qu58Dc2.jpg'>Navarrete Cathedral 4-6-18</a><br/><img src='https://i.imgur.com/qu58Dc2.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/zw6LdDZ.jpg'>Navarette Cena 4-6-18</a><br/><img src='https://i.imgur.com/zw6LdDZ.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/XX462xW.jpg'>Navarette Lodgings</a><br/><img src='https://i.imgur.com/XX462xW.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/MjptJe7.jpg'>Sculptor Sculpture</a><br/><img src='https://i.imgur.com/MjptJe7.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.429486, -2.561670]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/G24DV2W.jpg'>Alesón on the trail 4-7-18</a><br/><img src='https://i.imgur.com/G24DV2W.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/xUbLP1G.jpg'>Alesón Vineyard</a><br/><img src='https://i.imgur.com/xUbLP1G.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.413358, -2.672506]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/05UsypE.jpg'>Alesón Street View 4-7-18</a><br/><img src='https://i.imgur.com/05UsypE.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/3RB7n1Q.jpg'>Alesón Cena</a><br/><img src='https://i.imgur.com/3RB7n1Q.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/NrMUeIN.jpg'>Alesón Cama de Teodoro</a><br/><img src='https://i.imgur.com/NrMUeIN.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/86j3uAc.jpg'>Enrique y Ale de Mexico</a><br/><img src='https://i.imgur.com/86j3uAc.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/8eWFJ1x.jpg'>Cena con Enrique y Ale</a><br/><img src='https://i.imgur.com/8eWFJ1x.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.404855, -2.690646]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/ikXwfyV.jpg'>Pilgrim Statue 4-8-18</a><br/><img src='https://i.imgur.com/ikXwfyV.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.441170, -2.954059]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/uqdIfCQ.jpg'>Villafranca Montes de Oca. Amelia and Ian from England 4-10-18</a><br/><img src='https://i.imgur.com/uqdIfCQ.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.386972, -3.308899]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/vEBqerA.jpg'>Leaving St. Juan de Ortega for Burgos 4-11-18</a><br/><img src='https://i.imgur.com/vEBqerA.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.375950, -3.437261]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/5cRYRwU.jpg'>On the Trail to Burgos 4-12-18</a><br/><img src='https://i.imgur.com/5cRYRwU.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/HxSONvI.jpg'>Vaca</a><br/><img src='https://i.imgur.com/HxSONvI.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.322569, -3.458110]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/0ise58x.jpg'>Burgos Cathedral Exterior</a><br/><img src='https://i.imgur.com/0ise58x.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/wqgLUPE.jpg'>Burgos Cathedral Interior 1</a><br/><img src='https://i.imgur.com/wqgLUPE.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/EgLLehK.jpg'>Burgos Cathedral Interior 2</a><br/><img src='https://i.imgur.com/EgLLehK.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/an0k7Qd.jpg'>Burgos Cathedral Interior 3</a><br/><img src='https://i.imgur.com/an0k7Qd.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.340363, -3.704145]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/2ncW0DU.jpg'>Pointing the Way 4-13-18</a><br/><img src='https://i.imgur.com/2ncW0DU.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/e75KVIY.jpg'>Pointing the Way to Snacks</a><br/><img src='https://i.imgur.com/e75KVIY.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.340548, -3.834482]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/RUQ83K4.jpg'>Hontanas Early Morning Departure 4-14-18</a><br/><img src='https://i.imgur.com/RUQ83K4.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.312758, -4.044092]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/hBNCZwf.jpg'>San Anton Convent Ruins 4-14-18</a><br/><img src='https://i.imgur.com/hBNCZwf.jpg' width='300'/>";
+		L.marker([42.293116, -4.098616]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/L8JBqTB.jpg'>Path to Castrojeriz 4-14-18</a><br/><img src='https://i.imgur.com/L8JBqTB.jpg' width='300'/><br/><a href='https://i.imgur.com/TIAxPkb.jpg'>Entering Castrojeriz</a><br/><img src='https://i.imgur.com/TIAxPkb.jpg' width='300'/><br/><a href='https://i.imgur.com/EkI32h8.jpg'>Pilgrim Hombre</a><br/><img src='https://i.imgur.com/EkI32h8.jpg' width='300'/>";
+		L.marker([42.292036, -4.126277]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/KlYgfTE.jpg'>San Anton Convent Ruins 4-14-18</a><br/><img src='https://i.imgur.com/KlYgfTE.jpg' width='300'/>";
+		L.marker([42.287365, -4.179150]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/rLavho8.jpg'>Itero de la Vega Cena 4-14-18</a><br/><img src='https://i.imgur.com/rLavho8.jpg' width='300'/><br/><a href='https://i.imgur.com/LJZFQit.jpg'>Carnes! 4-14-18</a><br/><img src='https://i.imgur.com/LJZFQit.jpg' width='300'/><br/><a href='https://i.imgur.com/yAG3OwU.jpg'>Chant des pelerins de compostelle 4-14-18</a><br/><img src='https://i.imgur.com/yAG3OwU.jpg' width='300'/>";
+		L.marker([42.288087, -4.257817]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/FV1IxMh.jpg'>Entering Fromista 4-15-18</a><br/><img src='https://i.imgur.com/FV1IxMh.jpg' width='300'/>";
+		L.marker([42.263175, -4.399908]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/OMn26GI.jpg'>Carrión de los Condes 4-16-18</a><br/><img src='https://i.imgur.com/OMn26GI.jpg' width='300'/><br/><a href='https://i.imgur.com/fc7HUAa.jpg'>Carrión de Los Condes Bridge</a><br/><img src='https://i.imgur.com/fc7HUAa.jpg' width='300'/><br/><a href='https://i.imgur.com/yObUTMl.jpg'>Trees in Geometric Pattern</a><br/><img src='https://i.imgur.com/yObUTMl.jpg' width='300'/>";
+		L.marker([42.339699, -4.606725]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/pV4BOCX.jpg'>Typical Road at Calzadilla de la Cueza 4-16-18</a><br/><img src='https://i.imgur.com/pV4BOCX.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.328911, -4.799465]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/hyqzMPS.jpg'>Calzadilla de la Cueza Lunch 4-16-18</a><br/><img src='https://i.imgur.com/hyqzMPS.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.328982, -4.802435]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/sCYjG40.jpg'>Moratinos - Peanut Gallery 4-17-18</a><br/><img src='https://i.imgur.com/sCYjG40.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/RJwJt4j.jpg'>Moratinos Fancy Trees 4-17-18</a><br/><img src='https://i.imgur.com/RJwJt4j.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.360441, -4.925610]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/6mxRNpU.jpg'>Sahagún Foot Bridge 4-17-18</a><br/><img src='https://i.imgur.com/6mxRNpU.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/q49Pxyq.jpg'>Dos Caballeros 4-17-18</a><br/><img src='https://i.imgur.com/q49Pxyq.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.370154, -5.025112]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/yFJ4ERg.jpg'>El Burgo Ranero Breakfast with Fellow Pilgrims 4-18-18</a><br/><img src='https://i.imgur.com/yFJ4ERg.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/h9xLVeQ.jpg'>Roberto de Torino, a Fine Walking Partner 4-18-18</a><br/><img src='https://i.imgur.com/h9xLVeQ.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.423854, -5.219843]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/BywPp7K.jpg'>Reliegos Bar Elvis Exterior 4-18-18</a><br/><img src='https://i.imgur.com/BywPp7K.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/MFH3ESc.jpg'>Bar Elvis Wall of Names 4-18-18</a><br/><img src='https://i.imgur.com/MFH3ESc.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/yP8UBiK.jpg'>Bar Elvis Intior Wall</a><br/><img src='https://i.imgur.com/yP8UBiK.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/ftQe3Rb.jpg'>Wall of Names</a><br/><img src='https://i.imgur.com/ftQe3Rb.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/AKpDHZv.jpg'>Reliegos Alburgue Bar 4-18-18</a><br/><img src='https://i.imgur.com/AKpDHZv.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/KJY4pdy.jpg'>Alburgue Laundry Time 4-18-18</a><br/><img src='https://i.imgur.com/KJY4pdy.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.473711, -5.353462]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/dnTayOt.jpg'>Valdefresno Gardener with Tiller</a><br/><img src='https://i.imgur.com/dnTayOt.jpg' width='300'/>";
+		L.marker([42.594197, -5.492978]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/VTxw1lP.jpg'>Leon Cathedral Exterior 4-19-18</a><br/><img src='https://i.imgur.com/VTxw1lP.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/zyYVsmW.jpg'>Leon Cathedral Interior con Jesus 4-19-18</a><br/><img src='https://i.imgur.com/zyYVsmW.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/bLE29Ys.jpg'>Un Hombre de Leon 4-19-18</a><br/><img src='https://i.imgur.com/bLE29Ys.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/5sydZpj.jpg'>Leaving Leon 4-20-18</a><br/><img src='https://i.imgur.com/5sydZpj.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.599117, -5.566543]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/W0ZV291.jpg'>Chozas de Abajo Path 4-20-18</a><br/><img src='https://i.imgur.com/W0ZV291.jpg' width='300'/><br/><a href='https://i.imgur.com/wmZutqa.jpg'>Chozas de Abajo Lunch 4-20-18</a><br/><img src='https://i.imgur.com/wmZutqa.jpg' width='300'/>";
+		L.marker([42.506762, -5.686572]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/tB6iBZr.jpg'>Villar de Mazarife Pilgrims 4-20-18</a><br/><img src='https://i.imgur.com/tB6iBZr.jpg' width='300'/>";
+		L.marker([42.483826, -5.727311]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/rpIyiPx.jpg'>Hospital de Órbigo - Roberto Walk On</a><br/><img src='https://i.imgur.com/rpIyiPx.jpg' width='300'/>";
+		L.marker([42.463917, -5.877539]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/1oM9OPP.jpg'>Astorga Cathedral</a><br/><img src='https://i.imgur.com/1oM9OPP.jpg' width='300'/><br/><a href='https://i.imgur.com/0Ipmm2W.jpg'>Astorga Cathedral Dos</a><br/><img src='https://i.imgur.com/0Ipmm2W.jpg' width='300'/>";
+		L.marker([42.457964, -6.056372]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/B7YDdPj.jpg'>Santa Catalina de Somoza Lunch 4-22-18</a><br/><img src='https://i.imgur.com/B7YDdPj.jpg' width='300'/>";
+		L.marker([42.455276, -6.159214]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/eATSOjd.jpg'>El Ganso 4-22-18</a><br/><img src='https://i.imgur.com/eATSOjd.jpg' width='300'/><br/><a href='https://i.imgur.com/6ncv5HZ.jpg'>Standing the Test of Time</a><br/><img src='https://i.imgur.com/6ncv5HZ.jpg' width='300'/>";
+		L.marker([42.462585, -6.208358]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/QsdFR5n.jpg'>Molinaseca Alto Mayor 4-23-18</a><br/><img src='https://i.imgur.com/QsdFR5n.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.539677, -6.514748]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/H6orHuz.jpg'>Camponaraya Vineyard 4-24-18</a><br/><img src='https://i.imgur.com/H6orHuz.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.579196, -6.667973]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/nBNyW2L.jpg'>Pieros at El Serbal y La Luna with Amelia and Ian</a><br/><img src='https://i.imgur.com/nBNyW2L.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.606439, -6.748768]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/zTSZn2P.jpg'>Cacabelos New Growth 4-25-18</a><br/><img src='https://i.imgur.com/zTSZn2P.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.600013, -6.729566]).bindPopup(customPopup, customOptions).addTo(map);
+
+		//var customPopup = "<a href='https://i.imgur.com/XWXsQZg.jpg'>Road to Zubiri</a><br/><img src='https://i.imgur.com/XWXsQZg.jpg' alt='Santiago' width='300'/>";
+		//L.marker([42.967511, -1.419960]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/rbsO8Sh.jpg'>Villafranca Del Bierzo Sculpture 4-25-18</a><br/><img src='https://i.imgur.com/rbsO8Sh.jpg' width='300'/><br/><a href='https://i.imgur.com/0gc41Xq.jpg'>Spring Garden 4-25-18</a><br/><img src='https://i.imgur.com/0gc41Xq.jpg' width='300'/><br/><a href='https://i.imgur.com/9bSv80E.jpg'>Iris 4-25-18</a><br/><img src='https://i.imgur.com/9bSv80E.jpg' width='300'/><br/><a href='https://i.imgur.com/9JFFbXu.jpg'>Marking The Way 4-25-18</a><br/><img src='https://i.imgur.com/9JFFbXu.jpg' width='300'/>";
+		L.marker([42.606596, -6.811015]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/hZglnDy.jpg'>Vega del Valcarce Snack at El Paso Alburgue 4-25-18</a><br/><img src='https://i.imgur.com/hZglnDy.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/wpJfCve.jpg'>Rustic Tools 4-25-18</a><br/><img src='https://i.imgur.com/wpJfCve.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/psz829u.jpg'>Zapatos 4-25-18</a><br/><img src='https://i.imgur.com/psz829u.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.665274, -6.947311]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/KlYgfTE.jpg'>San Anton Convent Ruins 4-14-18</a><br/><img src='https://i.imgur.com/KlYgfTE.jpg' width='300'/>";
+		L.marker([42.707957, -7.043909]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/oWROYQm.jpg'>O Cebreiro Green Trail 4-26-18</a><br/><img src='https://i.imgur.com/oWROYQm.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/NrJtUJk.jpg'>Teodoro and French Family</a><br/><img src='https://i.imgur.com/NrJtUJk.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/9RnfpoR.jpg'>Pretty Stream</a><br/><img src='https://i.imgur.com/9RnfpoR.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/i9ojU0d.jpg'>Trail Marker</a><br/><img src='https://i.imgur.com/i9ojU0d.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/eY46Om3.jpg'>Trail Sign 4-14-18</a><br/><img src='https://i.imgur.com/eY46Om3.jpg' width='300'/>";
+		L.marker([42.707957, -7.043909]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/0rqyMro.jpg'>Fonfria Misty Morning</a><br/><img src='https://i.imgur.com/0rqyMro.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.731697, -7.157152]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/f20Hvzk.jpg'>Triacastela Trail Waterfall 4-27-18</a><br/><img src='https://i.imgur.com/f20Hvzk.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/r5mniMw.jpg'>Triacastela Green Trail 4-27-18</a><br/><img src='https://i.imgur.com/r5mniMw.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/hByUD5t.jpg'>Triacastela Landscape 4-27-18</a><br/><img src='https://i.imgur.com/hByUD5t.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.753888, -7.243625]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/XwuyoTh.jpg'>Sarria Entering City 4-27-18</a><br/><img src='https://i.imgur.com/XwuyoTh.jpg' width='300'/>";
+		L.marker([42.780267, -7.414791]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/7AktJ6m.jpg'>Arriving at Sarria 6:30am 3-27-19</a><br/><img src='https://i.imgur.com/7AktJ6m.jpg' width='300'/>";
+		L.marker([42.784593, -7.418415]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/bQNpqqB.jpg'>Leaving Sarria 3-27-19</a><br/><img src='https://i.imgur.com/bQNpqqB.jpg' width='300'/><br/><a href='https://i.imgur.com/NHtOmbG.jpg'>Noble Old Tree 3-27-19</a><br/><img src='https://i.imgur.com/NHtOmbG.jpg' width='300'/><br/><a href='https://i.imgur.com/mvaXaHA.jpg'>Sarria The Way 3-27-19</a><br/><img src='https://i.imgur.com/mvaXaHA.jpg' width='300'/>";
+		L.marker([42.778391, -7.423777]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/7AktJ6m.jpg'>Portomarin Bridge 3-27-19</a><br/><img src='https://i.imgur.com/7AktJ6m.jpg' width='300'/><br/><a href='https://i.imgur.com/lr9hKfL.jpg'>Portomarin Cerveza 3-27-19</a><br/><img src='https://i.imgur.com/lr9hKfL.jpg' width='300'/>";
+		L.marker([42.804993, -7.616324]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/p9qAp9U.jpg'>Albergue Casa Garcia 4-28-19</a><br/><img src='https://i.imgur.com/p9qAp9U.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/tDQRQta.jpg'>Albergue Guardian Angel on a Hot, Dry Day 4-28-19</a><br/><img src='https://i.imgur.com/tDQRQta.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.826384, -7.696395]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/MURgyEz.jpg'>Hearty Manu 3-28-19</a><br/><img src='https://i.imgur.com/MURgyEz.jpg' width='300'/><br/><a href='https://i.imgur.com/8OtmEpH.jpg'>Albergue Laundry 3-28-19</a><br/><img src='https://i.imgur.com/8OtmEpH.jpg' width='300'/><br/><a href='https://i.imgur.com/b2FiywG.jpg'>Albergue Cama 3-28-19</a><br/><img src='https://i.imgur.com/b2FiywG.jpg' width='300'/>";
+		L.marker([42.873230, -7.869280]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/6wGuBrE.jpg'>Leaving Palas del Rey 3-29-19</a><br/><img src='https://i.imgur.com/6wGuBrE.jpg' width='300'/><br/><a href='https://i.imgur.com/vaKLmF1.jpg'>Palas del Rey The Way 3-29-19</a><br/><img src='https://i.imgur.com/vaKLmF1.jpg' width='300'/>";
+		L.marker([42.867070, -7.878048]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/1YzfO4Q.jpg'>Melido Cena: Pulpo 4-14-18</a><br/><img src='https://i.imgur.com/1YzfO4Q.jpg' width='300'/>";
+		L.marker([42.913881, -8.014776]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/7H8DG4I.jpg'>Buente Pool 3-29-19</a><br/><img src='https://i.imgur.com/7H8DG4I.jpg' width='300'/><br/><a href='https://i.imgur.com/VyIEuMU.jpg'>Buente Vino 3-29-19</a><br/><img src='https://i.imgur.com/VyIEuMU.jpg' width='300'/>";
+		L.marker([42.463917, -5.877539]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/TTusB1V.jpg'>Ribadiso Landscape 3-30-19</a><br/><img src='https://i.imgur.com/TTusB1V.jpg' width='300'/><br/><a href='https://i.imgur.com/4YI9v4t.jpg'>Ribadiso Garden 3-30-19</a><br/><img src='https://i.imgur.com/4YI9v4t.jpg' width='300'/><br/><a href='https://i.imgur.com/WKQgqPo.jpg'>Ribadiso Trail 3-30-19</a><br/><img src='https://i.imgur.com/WKQgqPo.jpg' width='300'/>";
+		L.marker([42.938022, -8.154566]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/W0Kzz0Y.jpg'>A Calzada Calla Lilies</a><br/><img src='https://i.imgur.com/W0Kzz0Y.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.925532, -8.224070]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/i3OjI4T.jpg'>Leaving O Pedruozo 3-31-19</a><br/><img src='https://i.imgur.com/i3OjI4T.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/iXh6Nok.jpg'>Teodoro</a><br/><img src='https://i.imgur.com/iXh6Nok.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/5FJOgZS.jpg'>O Pedruozo: The Way</a><br/><img src='https://i.imgur.com/5FJOgZS.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.904478, -8.362338]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/W0Kzz0Y.jpg'>A Calzada Calla Lilies</a><br/><img src='https://i.imgur.com/W0Kzz0Y.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.925532, -8.224070]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/QqlyRoI.jpg'>Santiago de Compostela Cathedral 4-1-19</a><br/><img src='https://i.imgur.com/QqlyRoI.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/lgQP1eO.jpg'>Santiago de Compostela City Street 4-1-19</a><br/><img src='https://i.imgur.com/lgQP1eO.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/8JK1eBy.jpg'>Santiago de Compostela Charcuteria 4-1-19</a><br/><img src='https://i.imgur.com/8JK1eBy.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/5DYC0zc.jpg'>Hearty Victuals</a><br/><img src='https://i.imgur.com/5DYC0zc.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/BAIuhld.jpg'>Lodgings</a><br/><img src='https://i.imgur.com/BAIuhld.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/i2Z0NGb.jpg'>Sculpture in Park</a><br/><img src='https://i.imgur.com/i2Z0NGb.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/bi55tG7.jpg'>Santiago de Compostela Cathedral 4-19-19</a><br/><img src='https://i.imgur.com/bi55tG7.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.880558, -8.544736]).bindPopup(customPopup, customOptions).addTo(map);
+		//Backtrack to meet dick
+		var customPopup = "<a href='https://i.imgur.com/6lYDDt4.jpg'>Pamplona Bar with Tapas 4-2-19</a><br/><img src='https://i.imgur.com/6lYDDt4.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/UF4uoEP.jpg'>Pamplona Cerveza Art</a><br/><img src='https://i.imgur.com/UF4uoEP.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/trXXKxr.jpg'>Pamplona Cathedral</a><br/><img src='https://i.imgur.com/trXXKxr.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.816063, -1.647603]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/NjKDD5M.jpg'>Dick on The Way 4-5-19</a><br/><img src='https://i.imgur.com/NjKDD5M.jpg' width='300'/>";
+		L.marker([42.635496, -2.084647]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/tZVkC5u.jpg'>Najera. Dick 4-8-19</a><br/><img src='https://i.imgur.com/tZVkC5u.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.417153, -2.729777]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/yVZe0f7.jpg'>Santo Domingo de la Calzada Church Mural 4-9-19</a><br/><img src='https://i.imgur.com/yVZe0f7.jpg' width='300'/><br/><a href='https://i.imgur.com/Rtzv3b9.jpg'>Mural: Lamb of God</a><br/><img src='https://i.imgur.com/Rtzv3b9.jpg' width='300'/><br/><a href='https://i.imgur.com/SdYf7UL.jpg'>Mural: Rooster of God</a><br/><img src='https://i.imgur.com/SdYf7UL.jpg' width='300'/>";
+		L.marker([42.441170, -2.954059]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/VPottHa.jpg'>Hornillos del Camino: Teodoro 4-14-19</a><br/><img src='https://i.imgur.com/VPottHa.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/Tp4JWYW.jpg'>Hornillos del Camino Group Paella 4-14-19</a><br/><img src='https://i.imgur.com/Tp4JWYW.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/HTv1iBy.jpg'>Hornillos del Camino Group Paella 4-14-19</a><br/><img src='https://i.imgur.com/HTv1iBy.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/RGd5sH2.jpg'>Trail Scene 4-15-19</a><br/><img src='https://i.imgur.com/RGd5sH2.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/LoX9xvQ.jpg'>Commemorative Plaque 4-15-19</a><br/><img src='https://i.imgur.com/LoX9xvQ.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/JrOVGMa.jpg'>Country Road 4-15-19</a><br/><img src='https://i.imgur.com/JrOVGMa.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.338789, -3.925994]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/tZVkC5u.jpg'>Castrojeriz Trail 4-16-19</a><br/><img src='https://i.imgur.com/tZVkC5u.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.417153, -2.729777]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/OYaQs3g.jpg'>Revenga de Campos Dick and Sculpture 4-17-19</a><br/><img src='https://i.imgur.com/OYaQs3g.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/YU3ybbY.jpg'>Revenga de Campos Resting Pilgrims 4-17-19</a><br/><img src='https://i.imgur.com/YU3ybbY.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.417153, -2.729777]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/FJGe64Y.jpg'>Leaving Santiago de Compostela 4-19-19</a><br/><img src='https://i.imgur.com/FJGe64Y.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/0vPEm2S.jpg'>Green Pathway 4-19-19</a><br/><img src='https://i.imgur.com/0vPEm2S.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/tU2Ffdj.jpg'>Trail Marker 4-19-19</a><br/><img src='https://i.imgur.com/tU2Ffdj.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.875351, -8.571088]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/XmWoFup.jpg'>Negreira: Nice Evening 4-19-19</a><br/><img src='https://i.imgur.com/XmWoFup.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.910495, -8.736682]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/ctgsuJE.jpg'>Past Negreira: Pierre from French Reunion 4-20-19</a><br/><img src='https://i.imgur.com/ctgsuJE.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.920560, -8.751781]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/rw7hSHC.jpg'>As Maroñas Cena 4-20-19</a><br/><img src='https://i.imgur.com/rw7hSHC.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.963168, -8.912787]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/GXHm4kp.jpg'>Valcarlos Street 3-29-18</a><br/><img src='https://i.imgur.com/GXHm4kp.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/fPbYElO.jpg'>Valcarlos Hills 3-29-18</a><br/><img src='https://i.imgur.com/fPbYElO.jpg' alt='Santiago' width='300'/>";
+		L.marker([43.093702, -1.300735]).bindPopup(customPopup, customOptions).addTo(map);
+
+		//var customPopup = "<a href='https://i.imgur.com/rw7hSHC.jpg'>As Maroñas Cena 4-20-19</a><br/><img src='https://i.imgur.com/rw7hSHC.jpg' alt='Santiago' width='300'/>";
+		//L.marker([42.963168, -8.912787]).bindPopup(customPopup, customOptions).addTo(map);
+
+		//var customPopup = "<a href='https://i.imgur.com/rw7hSHC.jpg'>As Maroñas Cena 4-20-19</a><br/><img src='https://i.imgur.com/rw7hSHC.jpg' alt='Santiago' width='300'/>";
+		//L.marker([42.783641, -8.747090]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/C4hFLIk.jpg'>Vilar do Castro Green Fields 4-21-19</a><br/><img src='https://i.imgur.com/C4hFLIk.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/7y5XSq3.jpg'>Vilar do Castro Old Building 4-21-19</a><br/><img src='https://i.imgur.com/7y5XSq3.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.956562, -8.957223]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/6kjgUIn.jpg'>Near Olveiroa: Green Fields 4-21-19</a><br/><img src='https://i.imgur.com/6kjgUIn.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/WevfbCY.jpg'>Near Olveiroa: Vacas en el Camino 4-21-19</a><br/><img src='https://i.imgur.com/WevfbCY.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.965788, -9.038786]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/gtBrP3a.jpg'>Approaching Cee 4-21-19</a><br/><img src='https://i.imgur.com/gtBrP3a.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/ergR6ab.jpg'>German Pilgrims	 4-21-19</a><br/><img src='https://i.imgur.com/ergR6ab.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.960117, -9.160448]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/bvhBN7a.jpg'>The Sea at Cee 4-21-19</a><br/><img src='https://i.imgur.com/bvhBN7a.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.958149, -9.192246]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/7IEUn3o.jpg'>Path to Fisterra 4-22-19</a><br/><img src='https://i.imgur.com/7IEUn3o.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.943787, -9.193714]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/n79GMtu.jpg'>Teodoro Arrives at the Sea 4-22-19</a><br/><img src='https://i.imgur.com/n79GMtu.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/awJtqda.jpg'>Beautiful Bay 4-22-19</a><br/><img src='https://i.imgur.com/awJtqda.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/OkZPsn4.jpg'>Finisterre Hotel 4-22-19</a><br/><img src='https://i.imgur.com/OkZPsn4.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.924209, -9.262387]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/hAJIKnc.jpg'>Jesus at Camino's End 4-23-19</a><br/><img src='https://i.imgur.com/hAJIKnc.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/HDuh97C.jpg'>Finisterre Marina 4-23-19</a><br/><img src='https://i.imgur.com/HDuh97C.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/5FhgDcN.jpg'>Stephen Hawking Commemorative Plaque 4-23-19</a><br/><img src='https://i.imgur.com/5FhgDcN.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.920461, -9.268009]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/E2LQi1R.jpg'>Roncevalles Evening 3-30-18</a><br/><img src='https://i.imgur.com/E2LQi1R.jpg' alt='Santiago' width='300'/>";
+		L.marker([43.009561, -1.319231]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/eaMO7Xc.jpg'>Sheep Grazing 3-30-18</a><br/><img src='https://i.imgur.com/eaMO7Xc.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/OYuaUPJ.jpg'>Tired Feet 3-30-18</a><br/><img src='https://i.imgur.com/OYuaUPJ.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.943787, -9.193714]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/4SR3saI.jpg'>Zubiri Dinner 3-30-18</a><br/><img src='https://i.imgur.com/4SR3saI.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/RPfbQDb.jpg'>Zubiri Drinks 3-30-18</a><br/><img src='https://i.imgur.com/RPfbQDb.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.931244, -1.504438]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/I2bSJWO.jpg'>Illaraz Fountain 3-31-18</a><br/><img src='https://i.imgur.com/I2bSJWO.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/JPtxLTn.jpg'>Raised Beds 3-31-18</a><br/><img src='https://i.imgur.com/JPtxLTn.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/Np07DXB.jpg'>Teodoro on the Camino 3-31-18</a><br/><img src='https://i.imgur.com/Np07DXB.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.910405, -1.517947]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/kGI3RAk.jpg'>Spring Snow 3-30-18</a><br/><img src='https://i.imgur.com/kGI3RAk.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/OuGGdlL.jpg'>Precarious Crossing 3-30-18</a><br/><img src='https://i.imgur.com/OuGGdlL.jpg' alt='Santiago' width='300'/><br/><a href='https://i.imgur.com/mt0MZON.jpg'>Hiking with Siggi 3-30-18</a><br/><img src='https://i.imgur.com/mt0MZON.jpg' alt='Santiago' width='300'/>";
+		L.marker([42.989720, -1.335259]).bindPopup(customPopup, customOptions).addTo(map);
+
+		var customPopup = "<a href='https://i.imgur.com/f0JliEC.jpg'>Urdaniz Trail 3-31-18</a><br/><img src='https://i.imgur.com/f0JliEC.jpg' width='300'/>";
+		L.marker([42.912702, -1.524325]).bindPopup(customPopup, customOptions).addTo(map);
+
+		//var customPopup = "<a href='https://i.imgur.com/UIQmO3C.jpg'>Viana Church 4-6-19</a><br/><img src='https://i.imgur.com/UIQmO3C.jpg' width='300'/><br/><a href='https://i.imgur.com/eQ0pX8v.jpg'>Viana Church Interior 4-6-19</a><br/><img src='https://i.imgur.com/eQ0pX8v.jpg' width='300'/>";
+		//L.marker([42.635496, -2.084647]).bindPopup(customPopup, customOptions).addTo(map);
+		//added to old marker
+
+
+
+		// Prepare the Popup when it opens. Make sure scroll bars load properly for multi image popups
+		map.on('popupopen', function(event) {
+		  var popup = event.popup;
+		  popup._imgAllSized = popupImgAllSized(popup);
+		});
+
+		document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+		  var target = event.target,
+		    tagName = target.tagName,
+		    popup = target._popup;
+		  console.log("got load event from " + tagName);
+		  // Also check the Popup "_imgAllSized" flag.
+		  if (tagName === "IMG" && popup && !popup._imgAllSized) {
+		    console.log('updated');
+		    // Update the flag, in case all images have finished loading.
+		    popup.update();
+		    popup._imgAllSized = popupImgAllSized(popup);
+		  }
+		}, true);
+
+		function popupImgAllSized(popup) {
+		  // Get the HTMLElement holding the Popup content.
+		  var container = popup._contentNode;
+		  var imgs = container.querySelectorAll('img');
+		  var imgAllSized = true;
+		  for (var i = 0; i < imgs.length; i += 1) {
+		    // Store reference to popup in <img>
+		    imgs[i]._popup = popup;
+		    // Check if the image has unknown size.
+		    if (!imgs[i].naturalWidth) {
+		      imgAllSized = false;
+		    }
+		  }
+		  console.log(imgAllSized);
+		  return imgAllSized;
+		}
+
+	</script>
+</body>
+</html>
